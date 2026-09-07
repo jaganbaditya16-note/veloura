@@ -18,33 +18,37 @@ npm run preview
 
 ## Supabase setup
 
-1. Create a Supabase project.
+1. Create the client-owned Supabase project.
 2. Copy `.env.example` to `.env.local`.
 3. Add `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY`.
 4. Run `supabase-schema.sql` in the Supabase SQL Editor.
-5. Deploy the two Edge Functions in `supabase/functions/`.
-6. Configure the server-side `SUPABASE_SERVICE_ROLE_KEY` for Edge Functions only.
+5. Run `supabase/seed-products.sql` for the sample Linen Shirt.
+6. Deploy the Edge Functions in `supabase/functions/`.
+7. Configure `SUPABASE_SERVICE_ROLE_KEY` for Edge Functions only.
 
-The browser uses only the publishable key. Never place the service-role key, Stripe secret, or Razorpay secret in any `VITE_*` variable.
+The store uses **INR only**. Never place the service-role key or Razorpay secret in any `VITE_*` variable.
 
 ## Features
 
 - Responsive premium editorial storefront
+- INR pricing with paise-safe integer calculations
 - Search, category filtering and price sorting
 - Product quick view with size selection
 - Persistent cart and wishlist
-- Shipping threshold calculation
+- ₹15,000 free-shipping threshold
 - Supabase product catalog loading with demo fallback
-- Auth-aware checkout boundary
-- Server-side price and stock validation in `create-order`
-- Server-side newsletter signup
+- Authenticated server-side order validation
+- Product/variant/price/stock checks before order creation
+- Server-side newsletter signup function
 - Row Level Security policies for user-owned data
 - Lightweight CSS/SVG motion with no paid animation assets
 
-## Production payment flow
+## Production status
 
-`create-order` intentionally creates a pending order only. Connect Stripe/Razorpay from the Edge Function, then confirm payment through a verified webhook before changing an order to `paid`.
+The storefront and backend starter are prepared for integration, but **Razorpay payment creation/webhook verification, customer authentication UI, atomic stock deduction after verified payment, and the admin dashboard still need to be implemented and tested before accepting real orders**. The checkout button is intentionally a boundary until the payment flow is connected.
 
-## Before selling this to a real client
+Before selling to a real client, replace demo imagery with owned/licensed assets, configure transactional email, add CAPTCHA/rate limiting to public functions, add legal pages, and test the payment/webhook flow end-to-end.
 
-Replace demo imagery with owned/licensed assets, add a real CMS/admin dashboard, configure transactional email, add CAPTCHA/rate limiting to public functions, add legal pages, and test the payment/webhook flow end-to-end.
+## Client handoff
+
+The business owner should own Supabase, Razorpay, domain and production hosting. The developer configures and maintains them with appropriate access. Never share account passwords or commit private credentials.
